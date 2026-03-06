@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Intercambio de Regalos</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+
+</head>
+
+<body>
+<header class="container text-center mt-4 mb-4">
+    
+    <div class="row align-items-center justify-content-center">
+        
+        <div class="col-auto">
+            <h2 class="fw-bold">
+                Generador de intercambio
+            </h2>
+        </div>
+
+        <div class="col-auto">
+            <img src="img/logo.png" alt="Mi amigo secreto" class="logo">
+        </div>
+
+    </div>
+
+</header>
+<div class="container-box">
+
+<!-- ORGANIZADOR -->
+
+<div class="section">
+
+<h5>¿Quién organiza el intercambio?</h5>
+
+<input type="text" class="form-control" id="organizador" placeholder="Nombre del organizador">
+
+<div class="form-check mt-2">
+
+<input class="form-check-input" type="checkbox" id="participa" onchange="generarExclusiones()">
+
+<label class="form-check-label">
+El organizador participa
+</label>
+
+</div>
+
+</div>
+
+<hr>
+
+<!-- PARTICIPANTES -->
+
+<div class="section">
+
+<h5>Participantes</h5>
+
+<div class="input-group mb-3">
+
+<input type="text" id="nombreParticipante" class="form-control" placeholder="Nombre">
+
+<button class="btn btn-main" onclick="agregarParticipante()">
+Agregar
+</button>
+
+</div>
+
+<div id="listaParticipantes"></div>
+
+</div>
+
+<hr>
+
+<!-- EXCLUSIONES -->
+
+<div class="section">
+
+<h5>Exclusiones</h5>
+
+<p class="text-muted">
+Selecciona personas que no pueden regalarse entre si
+</p>
+
+<div id="listaExclusiones"></div>
+
+</div>
+
+<hr>
+
+<!-- EVENTO -->
+
+<div class="section">
+
+<h5>Motivo del intercambio</h5>
+
+<input type="text" class="form-control" id="evento" placeholder="Ejemplo: Navidad">
+
+</div>
+
+<hr>
+
+<!-- FECHA -->
+
+<div class="section">
+
+<h5>Fecha del evento</h5>
+
+<input type="date" class="form-control" id="fecha">
+
+</div>
+
+<hr>
+
+<!-- PRESUPUESTO -->
+
+<div class="section">
+
+<h5>Presupuesto</h5>
+
+<input type="number" class="form-control" id="presupuesto">
+
+</div>
+
+<hr>
+
+<div class="text-center">
+
+<button class="btn btn-success btn-lg" onclick="guardarDatos()">
+Realizar sorteo
+</button>
+
+</div>
+
+</div>
+
+<script src="js/app.js"></script>
+
+</body>
+</html>

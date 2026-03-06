@@ -1,0 +1,137 @@
+body{
+background:#0f1117;
+color:#e6edf3;
+font-family:Arial, Helvetica, sans-serif;
+}
+
+/* CONTENEDOR PRINCIPAL */
+
+.container-box{
+max-width:900px;
+margin:auto;
+margin-top:40px;
+background:#161b22;
+padding:40px;
+border-radius:12px;
+box-shadow:0px 6px 20px rgba(0,0,0,0.6);
+}
+
+/* TITULOS */
+
+.title{
+font-weight:bold;
+margin-bottom:25px;
+color:#ffffff;
+}
+
+/* SECCIONES */
+
+.section{
+margin-top:35px;
+}
+
+/* INPUTS */
+
+.form-control{
+background:#0d1117;
+border:1px solid #30363d;
+color:#e6edf3;
+}
+
+.form-control:focus{
+background:#0d1117;
+color:#ffffff;
+border-color:#6c63ff;
+box-shadow:0 0 0 0.2rem rgba(108,99,255,0.25);
+}
+
+/* CHECKBOX */
+
+.form-check-input{
+background-color:#0d1117;
+border:1px solid #30363d;
+}
+
+.form-check-input:checked{
+background-color:#6c63ff;
+border-color:#6c63ff;
+}
+
+/* BOTONES */
+
+.btn-main{
+background:#6c63ff;
+border:none;
+color:white;
+}
+
+.btn-main:hover{
+background:#5a52e0;
+}
+
+.btn-success{
+background:#00c896;
+border:none;
+}
+
+.btn-success:hover{
+background:#00a97f;
+}
+
+/* PARTICIPANTES */
+
+.participante-item{
+padding:10px;
+border-radius:8px;
+background:#0d1117;
+border:1px solid #30363d;
+margin-bottom:8px;
+}
+
+/* RESULTADOS */
+
+.result-card{
+background:#0d1117;
+border:1px solid #30363d;
+padding:15px;
+border-radius:10px;
+margin-bottom:10px;
+font-size:18px;
+}
+
+/* LINEAS */
+
+hr{
+border-color:#30363d;
+}
+
+/* TEXTOS SUAVES */
+
+.text-muted{
+color:#8b949e !important;
+}
+
+/* INPUT GROUP */
+
+.input-group .btn{
+background:#6c63ff;
+border:none;
+}
+
+.input-group .btn:hover{
+background:#5a52e0;
+}
+
+.logo{
+height: 165px;
+width:auto;
+margin-left:10px;
+}
+
+@media (max-width:576px){
+
+.logo{
+height:400px;
+}
+
+}
