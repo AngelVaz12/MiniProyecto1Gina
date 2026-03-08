@@ -3,187 +3,245 @@ let participantes=[];
 const input=document.getElementById("nombreParticipante");
 const lista=document.getElementById("listaParticipantes");
 const exclusionesDiv=document.getElementById("listaExclusiones");
+const botones = document.querySelectorAll("#motivoLista button");
+const inputOtroContainer = document.getElementById("inputOtroContainer");
+const inputOtro = document.getElementById("eventoOtro");
+const evento = document.getElementById("evento");
 
-function agregarParticipante(){
+const botonesDinero = document.querySelectorAll("#dineroLista button");
+const contenedorPresupuesto = document.getElementById("presupuestoContainer");
+const inputPresupuestoOtro = document.getElementById("presupuestoOtro");
+const inputPresupuestoHidden = document.getElementById("presupuesto");
 
-let nombre=input.value.trim();
+botonesDinero.forEach(boton => {
+    boton.addEventListener("click", function() {
+        // Quitar active de todos los botones
+        botonesDinero.forEach(b => b.classList.remove("active"));
+        // Marcar botón clickeado
+        this.classList.add("active");
 
-if(nombre==="") return;
-
-participantes.push(nombre);
-
-input.value="";
-
-mostrarParticipantes();
-generarExclusiones();
-
-}
-
-function eliminarParticipante(index){
-
-participantes.splice(index,1);
-
-mostrarParticipantes();
-generarExclusiones();
-
-}
-
-function mostrarParticipantes(){
-
-lista.innerHTML="";
-
-participantes.forEach((p,index)=>{
-
-let div=document.createElement("div");
-
-div.className="participante-item d-flex justify-content-between align-items-center";
-div.draggable=true;
-
-div.innerHTML=`
-<span>${p}</span>
-<button class="btn btn-danger btn-sm" onclick="eliminarParticipante(${index})">
-Eliminar
-</button>
-`;
-
-div.addEventListener("dragstart",()=>{
-
-div.classList.add("dragging");
-
+        if (this.dataset.value === "Otro") {
+            contenedorPresupuesto.style.display = "block"; // mostrar input
+            inputPresupuestoOtro.value = "";
+            inputPresupuestoHidden.value = "";
+            inputPresupuestoOtro.focus();
+        } else {
+            contenedorPresupuesto.style.display = "none";  // ocultar input
+            inputPresupuestoHidden.value = this.dataset.value; // guardar valor en hidden
+        }
+    });
 });
 
-div.addEventListener("dragend",()=>{
+    // Actualizar hidden mientras se escribe
+    inputPresupuestoOtro.addEventListener("input", function() {
+        inputPresupuestoHidden.value = this.value;
+    });
 
-div.classList.remove("dragging");
 
-});
+    botones.forEach(boton => {
+    boton.addEventListener("click", function() {
+        // Quitar active de todos los botones
+        botones.forEach(b => b.classList.remove("active"));
+        // Marcar el botón clickeado
+        this.classList.add("active");
 
-lista.appendChild(div);
+        if (this.dataset.value === "Otro") {
+        inputOtroContainer.style.display = "block"; // mostrar input
+        inputOtro.value = "";  // limpiar input
+        evento.value = "";     // limpiar input oculto
+        inputOtro.focus();     // poner el cursor en el input
+        } else {
+        inputOtroContainer.style.display = "none";  // ocultar input
+        evento.value = this.dataset.value;          // guardar valor en input oculto
+        }
+    });
+    });
 
-});
+    // Actualizar valor oculto mientras se escribe
+    inputOtro.addEventListener("input", function() {
+        evento.value = this.value;
+    });
 
-}
 
-lista.addEventListener("dragover",(e)=>{
+    function agregarParticipante(){
 
-e.preventDefault();
+        let nombre=input.value.trim();
 
-const dragging=document.querySelector(".dragging");
+        if(nombre==="") return;
 
-if(!dragging) return;
+        participantes.push(nombre);
 
-const elementos=[...lista.querySelectorAll(".participante-item:not(.dragging)")];
+        input.value="";
 
-let siguiente=elementos.find(el=>{
+        mostrarParticipantes();
+        generarExclusiones();
 
-return e.clientY <= el.offsetTop + el.offsetHeight/2;
+    }
 
-});
+    function eliminarParticipante(index){
 
-lista.insertBefore(dragging,siguiente);
+        participantes.splice(index,1);
 
-actualizarOrden();
+        mostrarParticipantes();
+        generarExclusiones();
 
-});
+    }
 
-function actualizarOrden(){
+    function mostrarParticipantes(){
 
-let nuevos=[...lista.children];
+        lista.innerHTML="";
 
-participantes=nuevos.map(el=>el.querySelector("span").innerText);
+        participantes.forEach((p,index)=>{
 
-generarExclusiones();
+            let div=document.createElement("div");
 
-}
+            div.className="participante-item d-flex justify-content-between align-items-center";
+            div.draggable=true;
 
-function obtenerListaCompleta(){
+            div.innerHTML=`
+            <span>${p}</span>
+            <button class="btn btn-danger btn-sm" onclick="eliminarParticipante(${index})">
+            Eliminar
+            </button>
+            `;
 
-let organizador=document.getElementById("organizador").value;
-let participa=document.getElementById("participa").checked;
+            div.addEventListener("dragstart",()=>{
 
-let lista=[...participantes];
+                div.classList.add("dragging");
 
-if(participa && organizador!==""){
+            });
 
-lista.push(organizador);
+            div.addEventListener("dragend",()=>{
 
-}
+                div.classList.remove("dragging");
 
-return lista;
+            });
 
-}
+            lista.appendChild(div);
 
-function generarExclusiones(){
+        });
 
-exclusionesDiv.innerHTML="";
+    }
 
-let listaCompleta=obtenerListaCompleta();
+    lista.addEventListener("dragover",(e)=>{
 
-listaCompleta.forEach(p=>{
+        e.preventDefault();
 
-let div=document.createElement("div");
+        const dragging=document.querySelector(".dragging");
 
-div.className="mb-3";
+        if(!dragging) return;
 
-let html=`<strong>${p}</strong><br>`;
+        const elementos=[...lista.querySelectorAll(".participante-item:not(.dragging)")];
 
-listaCompleta.forEach(o=>{
+        let siguiente=elementos.find(el=>{
 
-if(p!==o){
+            return e.clientY <= el.offsetTop + el.offsetHeight/2;
 
-html+=`
-<label class="me-3">
-<input type="checkbox" data-p="${p}" data-o="${o}">
-${o}
-</label>
-`;
+        });
 
-}
+        lista.insertBefore(dragging,siguiente);
 
-});
+        actualizarOrden();
 
-div.innerHTML=html;
+    });
 
-exclusionesDiv.appendChild(div);
+    function actualizarOrden(){
 
-});
+        let nuevos=[...lista.children];
 
-}
+        participantes=nuevos.map(el=>el.querySelector("span").innerText);
 
-function guardarDatos(){
+        generarExclusiones();
 
-let organizador=document.getElementById("organizador").value;
-let participa=document.getElementById("participa").checked;
-let evento=document.getElementById("evento").value;
-let fecha=document.getElementById("fecha").value;
-let presupuesto=document.getElementById("presupuesto").value;
+    }
 
-let exclusiones=[];
+    function obtenerListaCompleta(){
 
-document.querySelectorAll("#listaExclusiones input:checked")
-.forEach(c=>{
+        let organizador=document.getElementById("organizador").value;
+        let participa=document.getElementById("participa").checked;
 
-exclusiones.push({
-de:c.dataset.p,
-a:c.dataset.o
-});
+        let lista=[...participantes];
 
-});
+        if(participa && organizador!==""){
 
-let datos={
+            lista.push(organizador);
 
-organizador,
-participa,
-participantes,
-evento,
-fecha,
-presupuesto,
-exclusiones
+        }
 
-};
+        return lista;
 
-localStorage.setItem("intercambio",JSON.stringify(datos));
+    }
 
-window.location.href="resultado.html";
+    function generarExclusiones(){
 
-}
+        exclusionesDiv.innerHTML="";
+
+        let listaCompleta=obtenerListaCompleta();
+
+        listaCompleta.forEach(p=>{
+
+            let div=document.createElement("div");
+
+            div.className="mb-3";
+
+            let html=`<strong>${p}</strong><br>`;
+
+            listaCompleta.forEach(o=>{
+
+                if(p!==o){
+
+                    html+=`
+                    <label class="me-3">
+                    <input type="checkbox" data-p="${p}" data-o="${o}">
+                    ${o}
+                    </label>
+                    `;
+
+                }
+
+            });
+
+            div.innerHTML=html;
+
+            exclusionesDiv.appendChild(div);
+
+        });
+
+    }
+
+    function guardarDatos(){
+
+        let organizador=document.getElementById("organizador").value;
+        let participa=document.getElementById("participa").checked;
+        let evento=document.getElementById("evento").value;
+        let fecha=document.getElementById("fecha").value;
+        let presupuesto=document.getElementById("presupuesto").value;
+
+        let exclusiones=[];
+
+        document.querySelectorAll("#listaExclusiones input:checked").forEach(c=>{
+
+            exclusiones.push({
+                de:c.dataset.p,
+                a:c.dataset.o
+            });
+
+        });
+
+        let datos={
+
+            organizador,
+            participa,
+            participantes,
+            evento,
+            fecha,
+            presupuesto,
+            exclusiones
+
+        };
+
+        localStorage.setItem("intercambio",JSON.stringify(datos));
+
+        window.location.href="resultado.html";
+
+    }

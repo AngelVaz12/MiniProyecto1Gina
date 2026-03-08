@@ -1,80 +1,126 @@
-let datos=JSON.parse(localStorage.getItem("intercambio"));
+window.onload = function() {
+    let datos = JSON.parse(localStorage.getItem("intercambio"));
 
-let participantes=[...datos.participantes];
+    // Mostrar datos generales
+    document.getElementById("motivoR").innerText = datos.evento;
+    document.getElementById("organizadorR").innerText = datos.organizador;
+    document.getElementById("fechaR").innerText =datos.fecha;
+    document.getElementById("presupuestoR").innerText = datos.presupuesto;
 
-if(datos.participa){
+    let participantes = [...datos.participantes];
+    if (datos.participa) participantes.push(datos.organizador);
 
-participantes.push(datos.organizador);
+    function esValido(de, a) {
+        if (de === a) return false;
+        for (let ex of datos.exclusiones) {
+            if (ex.de === de && ex.a === a) return false;
+        }
+        return true;
+    }
 
-}
+    // Variables para mostrar resultados secuencialmente
+    let resultado = {};
+    let relaciones = [];
+    let indiceActual = 0;
+    let estadoVisible = false; // false = silueta, true = revelado
+    const contenedorSecuencial = document.getElementById("resultadoUno"); // contenedor
+    const btnSiguiente = document.getElementById("btnSiguiente");
 
-function esValido(de,a){
+    function sorteo() {
+        let receptores = [...participantes];
+        resultado = {};
 
-if(de===a) return false;
+        for (let p of participantes) {
+            let posibles = receptores.filter(r => esValido(p, r));
+            if (posibles.length === 0) {
+                location.reload();
+                return;
+            }
+            let elegido = posibles[Math.floor(Math.random() * posibles.length)];
+            resultado[p] = elegido;
+            receptores = receptores.filter(r => r !== elegido);
+        }
 
-for(let ex of datos.exclusiones){
+        relaciones = Object.entries(resultado);
+        indiceActual = 0;
+        contenedorSecuencial.innerHTML = "";
+        estadoVisible = false;
+    }
 
-if(ex.de===de && ex.a===a) return false;
+    function mostrarSiguiente() {
+        // Si ya no hay más relaciones
+        if (indiceActual >= relaciones.length && estadoVisible) {
+            contenedorSecuencial.innerHTML = "<p>¡Todos los intercambios revelados!</p>";
+            btnSiguiente.disabled = true;
+            return;
+        }
 
-}
+        // Caso 1: relación en pantalla oculta → revelar receptor
+        if (estadoVisible === false && contenedorSecuencial.firstChild) {
+            const receptor = relaciones[indiceActual - 1][1];
+            contenedorSecuencial.firstChild.innerHTML = `
+                ${relaciones[indiceActual - 1][0]} → <strong>${receptor}</strong>
+            `;
+            contenedorSecuencial.firstChild.style.opacity = 1;
+            contenedorSecuencial.firstChild.style.transform = "translateY(0)";
+            estadoVisible = true;
+            return;
+        }
 
-return true;
+        // Caso 2: quitar relación anterior
+        if (contenedorSecuencial.firstChild) {
+            contenedorSecuencial.firstChild.remove();
+            estadoVisible = false;
+        }
 
-}
+        // Caso 3: mostrar nueva relación con silueta
+        if (indiceActual < relaciones.length) {
+            const [participante, receptor] = relaciones[indiceActual];
+            const card = document.createElement("div");
+            card.className = "result-card";
+            card.innerHTML = `${participante} → <span class="silueta"></span>`;
 
-function sorteo(){
+            // Estilo inicial para animación
+            card.style.opacity = 0;
+            card.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+            card.style.transform = "translateY(-20px)";
 
-let receptores=[...participantes];
+            contenedorSecuencial.appendChild(card);
 
-let resultado={};
+            // Animar aparición de la silueta
+            setTimeout(() => {
+                card.style.opacity = 1;
+                card.style.transform = "translateY(0)";
+            }, 50);
 
-for(let p of participantes){
+            estadoVisible = false; // aún oculta el receptor
+            indiceActual++;
+        }
+    }
 
-let posibles=receptores.filter(r=>esValido(p,r));
+    function mostrarTodos() {
+        const div = document.getElementById("resultados");
+        div.innerHTML = "";
+        for (let [p, r] of Object.entries(resultado)) {
+            const card = document.createElement("div");
+            card.className = "result-card";
+            card.innerText = `${p} → ${r}`;
+            div.appendChild(card);
+        }
+        contenedorSecuencial.innerHTML = "";
+        btnSiguiente.disabled = true;
+    }
 
-if(posibles.length===0){
+    // Botones
+    btnSiguiente.addEventListener("click", mostrarSiguiente);
+    const btnTodos = document.getElementById("btnTodos");
+    btnTodos?.addEventListener("click", mostrarTodos);
 
-location.reload();
-return;
+    // Botón reiniciar
+    document.getElementById("btnReiniciar")?.addEventListener("click", function() {
+        localStorage.removeItem("intercambio");
+        window.location.href = "index.html";
+    });
 
-}
-
-let elegido=posibles[Math.floor(Math.random()*posibles.length)];
-
-resultado[p]=elegido;
-
-receptores=receptores.filter(r=>r!==elegido);
-
-}
-
-mostrarResultado(resultado);
-
-}
-
-function mostrarResultado(res){
-
-const div=document.getElementById("resultados");
-
-for(let p in res){
-
-let card=document.createElement("div");
-
-card.className="result-card";
-
-card.innerText=p+" → "+res[p];
-
-div.appendChild(card);
-
-}
-
-}
-
-function reiniciar(){
-
-localStorage.removeItem("intercambio");
-
-window.location.href="index.html";
-
-}
-
-sorteo();
+    sorteo();
+};

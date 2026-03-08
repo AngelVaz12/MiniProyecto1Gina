@@ -16,17 +16,35 @@
 
 <div class="container-box">
 
-<h2 class="text-center mb-4">🎲 Resultado del Sorteo</h2>
+  <h2 class="text-center mb-4">🎲 Resultado del Sorteo</h2>
+  <h3 class="text-center mb-4">
+    <div class="info-card">
+        <strong id="motivoR"></strong> 
+    </div>
+  </h3>
 
-<div id="resultados"></div>
-
-<div class="text-center mt-4">
-
-<button class="btn btn-main" onclick="reiniciar()">
-Nuevo sorteo
-</button>
-
+ <div class="info-general mb-4 text-center">
+    <div class="info-card">
+        <strong>Organizador:</strong> <span id="organizadorR"></span>
+    </div>
+    <div class="info-card">
+        <strong>Fecha:</strong> <span id="fechaR"></span>
+    </div>
+    <div class="info-card">
+        <strong>Presupuesto:</strong> $<span id="presupuestoR"></span>
+    </div>
 </div>
+
+  <!-- Contenedor de resultados uno por uno -->
+  <div id="resultadoUno" class="text-center mb-3"></div>
+
+  <!-- Botón para revelar siguiente intercambio -->
+  <div class="text-center">
+    <button id="btnSiguiente" class="btn btn-main">Siguiente</button>
+    <button id="btnReiniciar" class="btn btn-success">Nuevo sorteo</button>
+  </div>
+
+
 
 </div>
 
