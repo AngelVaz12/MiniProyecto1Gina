@@ -93,7 +93,7 @@ window.onload = function() {
                 card.style.transform = "translateY(0)";
             }, 50);
 
-            estadoVisible = false; // aún oculta el receptor
+            estadoVisible = false; 
             indiceActual++;
         }
     }
